@@ -1,14 +1,16 @@
 const express = require('express');
-const fs = require('fs').promises;
-const path = require('path');
+
+const {
+  obterPalestrantes,
+} = require('./utils/obterDadosArquivo');
+
+const gerarToken = require('./utils/gerarToken');
 
 const app = express();
 app.use(express.json());
 
 const HTTP_OK_STATUS = 200;
 const PORT = process.env.PORT || '3001';
-
-const PATH_TALKER_JSON = path.join(__dirname, './talker.json');
 
 // não remova esse endpoint, e para o avaliador funcionar
 app.get('/', (_request, response) => {
@@ -20,15 +22,12 @@ app.listen(PORT, () => {
 });
 
 app.get('/talker', async (req, res) => {
-  const dados = await fs.readFile(PATH_TALKER_JSON, 'utf-8');
-  const palestrantes = JSON.parse(dados);
+  const palestrantes = await obterPalestrantes();
   return res.status(HTTP_OK_STATUS).json(palestrantes);
 });
 
 app.get('/talker/:id', async (req, res) => {
-  const dados = await fs.readFile(PATH_TALKER_JSON, 'utf-8');
-  const palestrantes = JSON.parse(dados);
-
+  const palestrantes = await obterPalestrantes();
   const { id } = req.params;
 
   const palestrante = palestrantes
@@ -37,4 +36,10 @@ app.get('/talker/:id', async (req, res) => {
   if (!palestrante) return res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
 
   return res.status(HTTP_OK_STATUS).json(palestrante);
+});
+
+app.post('/login', (req, res) => {
+  // const { email, password } = req.body;
+  const token = gerarToken();
+  res.status(HTTP_OK_STATUS).json({ token });
 });
