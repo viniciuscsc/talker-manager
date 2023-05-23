@@ -1,10 +1,9 @@
 const express = require('express');
 
-const {
-  obterPalestrantes,
-} = require('./utils/obterDadosArquivo');
-
+const { obterPalestrantes } = require('./utils/obterDadosArquivo');
 const gerarToken = require('./utils/gerarToken');
+
+const { validarEmail, validarSenha } = require('./middlewares/validarLogin');
 
 const app = express();
 app.use(express.json());
@@ -38,7 +37,7 @@ app.get('/talker/:id', async (req, res) => {
   return res.status(HTTP_OK_STATUS).json(palestrante);
 });
 
-app.post('/login', (req, res) => {
+app.post('/login', validarEmail, validarSenha, (req, res) => {
   // const { email, password } = req.body;
   const token = gerarToken();
   res.status(HTTP_OK_STATUS).json({ token });
