@@ -1,9 +1,21 @@
 const express = require('express');
 
-const { obterPalestrantes } = require('./utils/obterDadosArquivo');
+const {
+  obterPalestrantes,
+  cadastrarPalestrante,
+} = require('./utils/obterPalestrantes');
 const gerarToken = require('./utils/gerarToken');
 
 const { validarEmail, validarSenha } = require('./middlewares/validarLogin');
+const validarToken = require('./middlewares/validarToken');
+const {
+  validarNomePalestrante,
+  validarIdadePalestrante,
+  validarPalestra,
+  validarDataPalestra,
+  validarAvaliacao,
+  validarValorAvaliacao,
+} = require('./middlewares/validarPalestrante');
 
 const app = express();
 app.use(express.json());
@@ -42,3 +54,21 @@ app.post('/login', validarEmail, validarSenha, (req, res) => {
   const token = gerarToken();
   res.status(HTTP_OK_STATUS).json({ token });
 });
+
+app.post(
+  '/talker',
+  validarToken,
+  validarNomePalestrante,
+  validarIdadePalestrante,
+  validarPalestra,
+  validarDataPalestra,
+  validarAvaliacao,
+  validarValorAvaliacao,
+  async (req, res) => {
+    const dadosPalestrante = req.body;
+    
+    const palestrante = await cadastrarPalestrante(dadosPalestrante);
+
+    return res.status(201).json(palestrante);
+},
+);

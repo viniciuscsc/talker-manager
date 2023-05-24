@@ -1,8 +1,8 @@
 const validarEmail = (req, res, next) => {
   const { email } = req.body;
 
-  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const emailValido = re.test(email);
+  const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const emailValido = regexEmail.test(email);
 
   if (!email || email === '') {
     return res.status(400).json({
