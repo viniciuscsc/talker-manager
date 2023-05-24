@@ -39,14 +39,14 @@ app.get('/talker', async (req, res) => {
   return res.status(HTTP_OK_STATUS).json(palestrantes);
 });
 
-app.get('/talker/:id', async (req, res) => {
+app.get('/talker/:id', validarId, async (req, res) => {
   const palestrantes = await obterPalestrantes();
   const { id } = req.params;
 
   const palestrante = palestrantes
     .find((p) => p.id === +id);
 
-  if (!palestrante) return res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
+  // if (!palestrante) return res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
 
   return res.status(HTTP_OK_STATUS).json(palestrante);
 });
