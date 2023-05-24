@@ -3,7 +3,8 @@ const express = require('express');
 const {
   obterPalestrantes,
   cadastrarPalestrante,
-} = require('./utils/obterPalestrantes');
+  alterarPalestrante,
+} = require('./utils/manipularTalkerJson');
 const gerarToken = require('./utils/gerarToken');
 
 const { validarEmail, validarSenha } = require('./middlewares/validarLogin');
@@ -16,6 +17,7 @@ const {
   validarAvaliacao,
   validarValorAvaliacao,
 } = require('./middlewares/validarPalestrante');
+const validarId = require('./middlewares/validarId');
 
 const app = express();
 app.use(express.json());
@@ -71,4 +73,24 @@ app.post(
 
     return res.status(201).json(palestrante);
 },
+);
+
+app.put(
+  '/talker/:id',
+  validarToken,
+  validarNomePalestrante,
+  validarIdadePalestrante,
+  validarPalestra,
+  validarDataPalestra,
+  validarAvaliacao,
+  validarValorAvaliacao,
+  validarId,
+  async (req, res) => {
+    const dadosPalestrante = req.body;
+    const { id } = req.params;
+
+    const palestrante = await alterarPalestrante(+id, dadosPalestrante);
+
+    return res.status(HTTP_OK_STATUS).json(palestrante);
+  },
 );

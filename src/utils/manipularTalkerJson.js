@@ -26,7 +26,37 @@ const cadastrarPalestrante = async (dadosPalestrante) => {
   }
 };
 
+const alterarPalestrante = async (id, dadosPalestrante) => {
+  const palestrantes = await obterPalestrantes();
+  const { name, age, talk: { watchedAt, rate } } = dadosPalestrante;
+
+  const novoPalestrantes = palestrantes.map((palestrante) => {
+    if (palestrante.id === id) {
+      const palestranteAtual = { id, name, age, talk: { watchedAt, rate } };
+      return palestranteAtual;
+    }
+    return palestrante;
+  });
+
+  try {
+    await writeFile(PATH_TALKER_JSON, JSON.stringify(novoPalestrantes));
+    return { id, name, age, talk: { watchedAt, rate } };
+  } catch (erro) {
+    console.error(erro.message);
+  }
+};
+
+// alterarPalestrante(5, {
+//   name: 'Danielle Santos',
+//   age: 56,
+//   talk: {
+//     watchedAt: '22/10/2019',
+//     rate: 5,
+//   },
+// });
+
 module.exports = {
   obterPalestrantes,
   cadastrarPalestrante,
+  alterarPalestrante,
 };
