@@ -46,8 +46,22 @@ const alterarPalestrante = async (id, dadosPalestrante) => {
   }
 };
 
+const deletarPalestrante = async (id) => {
+  const palestrantes = await obterPalestrantes();
+
+  const novoPalestrantes = palestrantes
+    .filter((palestrante) => palestrante.id !== id);
+
+  try {
+    await writeFile(PATH_TALKER_JSON, JSON.stringify(novoPalestrantes));
+  } catch (erro) {
+    console.error(erro.message);
+  }
+};
+
 module.exports = {
   obterPalestrantes,
   cadastrarPalestrante,
   alterarPalestrante,
+  deletarPalestrante,
 };

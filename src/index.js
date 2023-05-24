@@ -4,6 +4,7 @@ const {
   obterPalestrantes,
   cadastrarPalestrante,
   alterarPalestrante,
+  deletarPalestrante,
 } = require('./utils/manipularTalkerJson');
 const gerarToken = require('./utils/gerarToken');
 
@@ -94,3 +95,11 @@ app.put(
     return res.status(HTTP_OK_STATUS).json(palestrante);
   },
 );
+
+app.delete('/talker/:id', validarToken, validarId, async (req, res) => {
+  const { id } = req.params;
+
+  await deletarPalestrante(+id);
+
+  return res.status(204).end();
+});
